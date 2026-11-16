@@ -184,3 +184,7 @@ Algunos parámetros fáciles de tunear en `game.js`:
 ## Licencia
 
 Proyecto de uso libre con fines educativos y de práctica.
+
+## Tema
+
+El juego arranca en modo oscuro. El botón "Modo claro/oscuro" (arriba a la derecha) cambia el tema y la elección se guarda en `localStorage`.

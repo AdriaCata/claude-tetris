@@ -39,6 +39,7 @@ const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
+const themeToggle = document.getElementById('theme-toggle');
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 
@@ -163,13 +164,30 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
   context.fillStyle = color;
   context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
   // highlight
-  context.fillStyle = 'rgba(255,255,255,0.12)';
+  context.fillStyle = getThemeVar('--highlight');
   context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
   context.globalAlpha = 1;
 }
 
+function getThemeVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function applyTheme(theme) {
+  const light = theme === 'light';
+  document.documentElement.dataset.theme = light ? 'light' : 'dark';
+  themeToggle.setAttribute('aria-pressed', String(light));
+  themeToggle.setAttribute('aria-label', light ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro');
+  themeToggle.textContent = light ? '☾ Modo oscuro' : '☀ Modo claro';
+  try { localStorage.setItem('theme', light ? 'light' : 'dark'); } catch (e) {}
+  if (typeof current !== 'undefined' && current) {
+    draw();
+    if (next) drawNext();
+  }
+}
+
 function drawGrid() {
-  ctx.strokeStyle = '#22222e';
+  ctx.strokeStyle = getThemeVar('--grid');
   ctx.lineWidth = 0.5;
   for (let c = 1; c < COLS; c++) {
     ctx.beginPath();
@@ -300,5 +318,14 @@ document.addEventListener('keydown', e => {
 });
 
 restartBtn.addEventListener('click', init);
+
+themeToggle.addEventListener('click', () => {
+  applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
+  themeToggle.blur(); // evita que Espacio active el botón durante la partida
+});
+
+let savedTheme = 'dark';
+try { savedTheme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark'; } catch (e) {}
+applyTheme(savedTheme);
 
 init();
