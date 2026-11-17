@@ -8,9 +8,11 @@
 </head>
 <body>
   <div class="wrapper">
-    <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false" aria-label="Cambiar a modo claro">☀ Modo claro</button>
+    <button id="theme-toggle" class="theme-toggle">
+      <span class="toggle-icon">&#9790;</span>
+      <span class="toggle-label">LIGHT</span>
+    </button>
     <h1 class="game-title">TETRIS</h1>
-
     <div class="game-container">
       <canvas id="board" width="300" height="600"></canvas>
 
@@ -40,17 +42,64 @@
             <li><kbd>↑</kbd> rotar</li>
             <li><kbd>↓</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
-            <li><kbd>P</kbd> pausa</li>
+            <li><kbd>P</kbd><kbd>Esc</kbd> pausa</li>
           </ul>
         </div>
       </aside>
     </div>
 
-    <div id="overlay" class="overlay hidden">
+    <div id="overlay" class="overlay" data-mode="start">
       <div class="overlay-box">
-        <p id="overlay-title">GAME OVER</p>
-        <p id="overlay-score"></p>
-        <button id="restart-btn">Reiniciar</button>
+        <p id="overlay-title">NUEVA PARTIDA</p>
+        <p id="overlay-score" data-show="pause gameover"></p>
+        <p id="record-badge" class="record-badge hidden" data-show="gameover"></p>
+
+        <form id="name-form" class="name-form hidden" data-show="gameover">
+          <label for="name-input">Tu nombre para el récord</label>
+          <div class="name-row">
+            <input id="name-input" type="text" maxlength="12" autocomplete="off" spellcheck="false" />
+            <button type="submit" class="btn btn-small">Guardar</button>
+          </div>
+        </form>
+
+        <div class="menu-buttons">
+          <button id="play-btn" class="btn btn-primary" data-show="start">Jugar</button>
+          <button id="resume-btn" class="btn btn-primary" data-show="pause">Reanudar</button>
+          <button id="restart-btn" class="btn" data-show="pause gameover">Reiniciar</button>
+          <button id="controls-btn" class="btn" data-show="start pause" aria-expanded="false" aria-controls="controls-list">Ver controles</button>
+          <button id="menu-btn" class="btn" data-show="pause gameover">Menú principal</button>
+        </div>
+
+        <ul id="controls-list" class="controls-list hidden" data-show="start pause">
+          <li><span><kbd>←</kbd> <kbd>→</kbd></span> Mover</li>
+          <li><span><kbd>↑</kbd> <kbd>X</kbd></span> Rotar</li>
+          <li><span><kbd>↓</kbd></span> Bajar rápido</li>
+          <li><span><kbd>Espacio</kbd></span> Caída instantánea</li>
+          <li><span><kbd>P</kbd> <kbd>Esc</kbd></span> Pausa / menú</li>
+        </ul>
+
+        <div class="settings" data-show="start pause gameover">
+          <label>Nivel inicial
+            <select id="level-select"></select>
+          </label>
+          <label>Skin
+            <select id="skin-select"></select>
+          </label>
+        </div>
+
+        <section class="records" data-show="start gameover">
+          <h2 class="records-title">RÉCORDS</h2>
+          <table class="records-table">
+            <thead>
+              <tr><th>#</th><th>Nombre</th><th>Puntos</th><th>Líneas</th><th>Nv</th></tr>
+            </thead>
+            <tbody id="records-body"></tbody>
+          </table>
+          <p class="records-stats">
+            Mejor combo: <b id="best-combo">0</b> · Líneas máx.: <b id="max-lines">0</b>
+          </p>
+          <button id="reset-records-btn" class="btn btn-link">Borrar récords</button>
+        </section>
       </div>
     </div>
   </div>
