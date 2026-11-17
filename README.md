@@ -34,14 +34,17 @@ Implementación del clásico **Tetris** en JavaScript vanilla, usando HTML5 Canv
 Es una versión jugable del Tetris clásico con todas las mecánicas que esperarías:
 
 - Tablero de **10 × 20** celdas.
-- Las **7 piezas estándar** (I, O, T, S, Z, J, L) con colores diferenciados, más la pieza reto **Tuerca**: un anillo de 3×3 con el hueco central vacío.
+- Las **7 piezas estándar** (I, O, T, S, Z, J, L) con colores diferenciados.
 - **Rotación** con _wall kicks_ básicos (pequeños desplazamientos para que la pieza pueda rotar pegada a la pared).
 - **Soft drop** (bajada acelerada) y **hard drop** (caída instantánea).
 - **Pieza fantasma** (_ghost piece_): muestra dónde aterrizará la pieza actual.
 - **Vista previa** de la siguiente pieza.
 - **Sistema de puntuación** clásico de Tetris (100 / 300 / 500 / 800 multiplicado por nivel).
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
-- **Pausa** y **Game Over** con opción de reinicio.
+- **Pantalla de inicio** con récords, selector de nivel inicial y de skin.
+- **Menú de pausa** (`P` o `Esc`): reanudar, reiniciar, ver controles, nivel inicial, skin y volver al menú. Mientras está abierto el juego no recibe teclas, y al reanudar hay un breve bloqueo para evitar movimientos accidentales.
+- **Tabla de récords local** (`localStorage`): top 5 con nombre del jugador, resaltado de la nueva entrada, mejor combo (limpiezas de líneas consecutivas) y máximo de líneas. Se pueden borrar desde el menú.
+- **Skins**: Retro, Neon (glow con `shadowBlur`), Pastel (bordes redondeados) y Pixel art (textura pixelada). Se cambian al instante y se recuerdan entre sesiones.
 
 ---
 
@@ -84,7 +87,7 @@ Después abre `http://localhost:8000` en el navegador.
 | `↑` o `X` | Rotar la pieza en sentido horario |
 | `↓`       | Soft drop (bajar más rápido)      |
 | `Espacio` | Hard drop (caída instantánea)     |
-| `P`       | Pausar / reanudar                 |
+| `P` / `Esc` | Abrir / cerrar el menú de pausa |
 
 ---
 
@@ -108,7 +111,7 @@ Aporta el aspecto visual con estética _dark / retro arcade_: fondo oscuro, tipo
 
 Contiene toda la lógica del juego. A grandes rasgos:
 
-- **Modelo del tablero**: una matriz `ROWS × COLS` donde cada celda guarda `0` (vacía) o un índice de color (1–8) que identifica la pieza.
+- **Modelo del tablero**: una matriz `ROWS × COLS` donde cada celda guarda `0` (vacía) o un índice de color (1–7) que identifica la pieza.
 - **Piezas**: definidas como matrices cuadradas. Para rotar se calcula la transposición + reverso de filas (`rotateCW`).
 - **Detección de colisiones** (`collide`): comprueba que ninguna celda de la pieza salga del tablero ni se solape con bloques ya fijados.
 - **Wall kicks** (`tryRotate`): si la rotación choca, intenta desplazar la pieza ±1 y ±2 columnas antes de descartar el giro.
@@ -173,7 +176,7 @@ Algunos parámetros fáciles de tunear en `game.js`:
 | `COLS`         | Columnas del tablero                     | `10`                  |
 | `ROWS`         | Filas del tablero                        | `20`                  |
 | `BLOCK`        | Tamaño en píxeles de cada celda          | `30`                  |
-| `COLORS`       | Paleta de colores por tipo de pieza      | 8 colores             |
+| `COLORS`       | Paleta de colores por tipo de pieza      | 7 colores             |
 | `LINE_SCORES`  | Puntos por 1, 2, 3 o 4 líneas eliminadas | `[0,100,300,500,800]` |
 | `dropInterval` | Velocidad inicial de caída en ms         | `1000`                |
 
@@ -184,7 +187,3 @@ Algunos parámetros fáciles de tunear en `game.js`:
 ## Licencia
 
 Proyecto de uso libre con fines educativos y de práctica.
-
-## Tema
-
-El juego arranca en modo oscuro. El botón "Modo claro/oscuro" (arriba a la derecha) cambia el tema y la elección se guarda en `localStorage`.
